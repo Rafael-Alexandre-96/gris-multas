@@ -37,7 +37,7 @@ public class VeiculoService {
         Veiculo finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
         finded.setFrota(entity.getFrota());
         finded.setPlaca(entity.getPlaca());
-        this.validate(entity);
+        this.validate(finded);
         finded.getRegistroStatus().setUpdateAtNow();
         return repository.save(finded);
     }
