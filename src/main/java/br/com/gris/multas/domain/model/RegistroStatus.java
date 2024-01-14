@@ -8,7 +8,7 @@ import lombok.Getter;
 public class RegistroStatus {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private LocalDateTime deletedAt;
+    /*private LocalDateTime deletedAt;*/
 
     public void setCreateAtNow() {
         if (createAt == null)
