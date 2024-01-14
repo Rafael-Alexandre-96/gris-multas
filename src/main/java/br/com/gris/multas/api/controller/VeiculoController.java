@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.gris.multas.domain.model.Veiculo;
 import br.com.gris.multas.domain.service.VeiculoService;
 
+
 @RestController
 @RequestMapping("/api/veiculo")
 public class VeiculoController {
@@ -32,7 +33,11 @@ public class VeiculoController {
         return new ResponseEntity<Veiculo>(service.findById(id), HttpStatus.OK);
     }
     
-
+    @GetMapping("/placa/{placa}")
+    public ResponseEntity<Veiculo> findByPlaca(@PathVariable String placa) {
+        return new ResponseEntity<Veiculo>(service.findByPlaca(placa), HttpStatus.OK);
+    }
+    
     @PostMapping()
     public ResponseEntity<Veiculo> create(@RequestBody Veiculo input) {
         return new ResponseEntity<Veiculo>(service.create(input), HttpStatus.CREATED);

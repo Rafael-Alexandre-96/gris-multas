@@ -21,8 +21,13 @@ public class VeiculoService {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
     }
 
+    public Veiculo findByPlaca(String placa) {
+        return repository.findByPlaca(placa.toUpperCase()).orElseThrow(() -> new RuntimeException("Entity not founded."));
+    }
+
     @Transactional
     public Veiculo create(Veiculo entity) {
+        this.validate(entity);
         entity.getRegistroStatus().setCreateAtNow();
         return repository.save(entity);
     }
@@ -30,10 +35,17 @@ public class VeiculoService {
     @Transactional
     public Veiculo update(String id, Veiculo entity) {
         Veiculo finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
-        finded.setFrota(entity.getFrota().toUpperCase());
-        finded.setPlaca(entity.getPlaca().toUpperCase());
+        finded.setFrota(entity.getFrota());
+        finded.setPlaca(entity.getPlaca());
+        this.validate(entity);
         finded.getRegistroStatus().setUpdateAtNow();
         return repository.save(finded);
+    }
+
+    private Veiculo validate(Veiculo entity) {
+        entity.setFrota(entity.getFrota().toUpperCase());
+        entity.setPlaca(entity.getPlaca().toUpperCase());
+        return entity;
     }
 
     @Transactional
