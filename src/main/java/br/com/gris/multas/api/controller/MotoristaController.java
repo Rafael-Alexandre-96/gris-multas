@@ -36,7 +36,7 @@ public class MotoristaController {
     }
     
     @PostMapping()
-    public ResponseEntity<Motorista> create(@RequestBody Motorista input) {
+    public ResponseEntity<Motorista> create(@NonNull @RequestBody Motorista input) {
         return new ResponseEntity<Motorista>(service.create(input), HttpStatus.CREATED);
     }
 

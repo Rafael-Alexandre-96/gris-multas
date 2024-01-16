@@ -23,8 +23,7 @@ public class MotoristaService {
     }
 
     @Transactional
-    public Motorista create(Motorista entity) {
-        this.validate(entity);
+    public Motorista create(@NonNull Motorista entity) {
         entity.getRegistroStatus().setCreateAtNow();
         entity.getRegistroStatus().setActive();
         return repository.save(entity);
@@ -33,11 +32,10 @@ public class MotoristaService {
     @Transactional
     public Motorista update(@NonNull String id, Motorista entity) {
         Motorista finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
-        finded.setNome(entity.getNome());
-        finded.setCpf(entity.getCpf());
-        this.validate(finded);
-        finded.getRegistroStatus().setUpdateAtNow();
-        return repository.save(finded);
+        entity.setId(id);
+        entity.setRegistroStatus(finded.getRegistroStatus());
+        entity.getRegistroStatus().setUpdateAtNow();
+        return repository.save(entity);
     }
 
     @Transactional
@@ -49,11 +47,6 @@ public class MotoristaService {
         else
             finded.getRegistroStatus().setDeactive();
         return repository.save(finded);
-    }
-
-    private Motorista validate(Motorista entity) {
-        entity.setNome(entity.getNome().toUpperCase());
-        return entity;
     }
 
     @Transactional

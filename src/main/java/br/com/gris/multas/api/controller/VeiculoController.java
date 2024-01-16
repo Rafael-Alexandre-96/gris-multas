@@ -41,7 +41,7 @@ public class VeiculoController {
     }
     
     @PostMapping()
-    public ResponseEntity<Veiculo> create(@RequestBody Veiculo input) {
+    public ResponseEntity<Veiculo> create(@NonNull @RequestBody Veiculo input) {
         return new ResponseEntity<Veiculo>(service.create(input), HttpStatus.CREATED);
     }
 

@@ -22,13 +22,12 @@ public class VeiculoService {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
     }
 
-    public Veiculo findByPlaca(String placa) {
+    public Veiculo findByPlaca(@NonNull String placa) {
         return repository.findByPlaca(placa.toUpperCase()).orElseThrow(() -> new RuntimeException("Entity not founded."));
     }
 
     @Transactional
-    public Veiculo create(Veiculo entity) {
-        this.validate(entity);
+    public Veiculo create(@NonNull Veiculo entity) {
         entity.getRegistroStatus().setCreateAtNow();
         entity.getRegistroStatus().setActive();
         return repository.save(entity);
@@ -37,11 +36,10 @@ public class VeiculoService {
     @Transactional
     public Veiculo update(@NonNull String id, Veiculo entity) {
         Veiculo finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
-        finded.setFrota(entity.getFrota());
-        finded.setPlaca(entity.getPlaca());
-        this.validate(finded);
-        finded.getRegistroStatus().setUpdateAtNow();
-        return repository.save(finded);
+        entity.setId(id);
+        entity.setRegistroStatus(finded.getRegistroStatus());
+        entity.getRegistroStatus().setUpdateAtNow();
+        return repository.save(entity);
     }
 
     @Transactional
@@ -53,12 +51,6 @@ public class VeiculoService {
         else
             finded.getRegistroStatus().setDeactive();
         return repository.save(finded);
-    }
-
-    private Veiculo validate(Veiculo entity) {
-        entity.setFrota(entity.getFrota().toUpperCase());
-        entity.setPlaca(entity.getPlaca().toUpperCase());
-        return entity;
     }
 
     @Transactional

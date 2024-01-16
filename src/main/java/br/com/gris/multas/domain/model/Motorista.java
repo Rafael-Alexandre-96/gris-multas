@@ -20,4 +20,8 @@ public class Motorista {
     private String nome;
     private String cpf;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
+
+    public void setNome(String nome) {
+        this.nome = nome.toUpperCase();
+    }
 }
