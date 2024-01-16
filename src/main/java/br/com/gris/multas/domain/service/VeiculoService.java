@@ -3,6 +3,7 @@ package br.com.gris.multas.domain.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,7 @@ public class VeiculoService {
         return repository.findAll();
     }
 
-    public Veiculo findById(String id) {
+    public Veiculo findById(@NonNull String id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
     }
 
@@ -29,16 +30,28 @@ public class VeiculoService {
     public Veiculo create(Veiculo entity) {
         this.validate(entity);
         entity.getRegistroStatus().setCreateAtNow();
+        entity.getRegistroStatus().setActive();
         return repository.save(entity);
     }
 
     @Transactional
-    public Veiculo update(String id, Veiculo entity) {
+    public Veiculo update(@NonNull String id, Veiculo entity) {
         Veiculo finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
         finded.setFrota(entity.getFrota());
         finded.setPlaca(entity.getPlaca());
         this.validate(finded);
         finded.getRegistroStatus().setUpdateAtNow();
+        return repository.save(finded);
+    }
+
+    @Transactional
+    public Veiculo setActive(@NonNull String id, @NonNull Boolean active) {
+        Veiculo finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
+        finded.getRegistroStatus().setUpdateAtNow();
+        if (active)
+            finded.getRegistroStatus().setActive();
+        else
+            finded.getRegistroStatus().setDeactive();
         return repository.save(finded);
     }
 
@@ -49,8 +62,8 @@ public class VeiculoService {
     }
 
     @Transactional
-    public void deleteById(String id) {
-        Veiculo finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
-        repository.delete(finded);
+    public void deleteById(@NonNull String id) {
+        repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
+        repository.deleteById(id);
     }
 }
