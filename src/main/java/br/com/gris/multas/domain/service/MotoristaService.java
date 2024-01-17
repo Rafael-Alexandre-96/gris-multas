@@ -7,6 +7,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Motorista;
 import br.com.gris.multas.domain.repository.MotoristaRepository;
 
@@ -19,7 +20,7 @@ public class MotoristaService {
     }
 
     public Motorista findById(@NonNull String id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
+        return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
     }
 
     @Transactional
@@ -31,7 +32,7 @@ public class MotoristaService {
 
     @Transactional
     public Motorista update(@NonNull String id, Motorista entity) {
-        Motorista finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
+        Motorista finded = repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
         entity.setId(id);
         entity.setRegistroStatus(finded.getRegistroStatus());
         entity.getRegistroStatus().setUpdateAtNow();
@@ -40,7 +41,7 @@ public class MotoristaService {
 
     @Transactional
     public Motorista setActive(@NonNull String id, @NonNull Boolean active) {
-        Motorista finded = repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
+        Motorista finded = repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
         finded.getRegistroStatus().setUpdateAtNow();
         if (active)
             finded.getRegistroStatus().setActive();
@@ -51,7 +52,11 @@ public class MotoristaService {
 
     @Transactional
     public void deleteById(@NonNull String id) {
-        repository.findById(id).orElseThrow(() -> new RuntimeException("Entity not founded."));
+        repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
         repository.deleteById(id);
+    }
+
+    private RuntimeException throwEntityNotFoundException(String id) {
+        return new EntityNotFoundException(String.format("Entity (%s - ID %s) not founded.", "motorista", id));
     }
 }
