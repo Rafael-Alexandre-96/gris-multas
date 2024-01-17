@@ -54,6 +54,7 @@ public class Multa {
         this.numeroAit = numeroAit.toUpperCase();
     }
 
+    /***
     public void setValorBoleto(Double valorBoleto) {
         this.valorBoleto = valorBoleto;
         this.descontoBoleto = valorBoleto * 0.2;
@@ -65,6 +66,7 @@ public class Multa {
         this.valorNi = valorNi;
         this.descontoNi = this.valorNi * 0.2;
     }
+    ***/
 
     public Double getValorValeBoleto() {
         return this.valorBoleto - this.descontoBoleto;
