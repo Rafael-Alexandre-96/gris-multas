@@ -22,4 +22,12 @@ public class CustomExceptionHandler {
 		data.setMessage(e.getMessage());
 		return new ResponseEntity<DataException>(data, HttpStatus.NOT_FOUND);
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) @ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<DataException> handleRuntimeException(HttpServletRequest req, Exception e) {
+		DataException data = new DataException();
+		data.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		data.setMessage(e.getMessage());
+		return new ResponseEntity<DataException>(data, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }

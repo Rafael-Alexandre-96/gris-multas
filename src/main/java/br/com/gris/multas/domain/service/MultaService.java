@@ -54,7 +54,6 @@ public class MultaService {
         if (entity.getSemiReboque() != null)
             entity.setSemiReboque(veiculoService.findById(entity.getSemiReboque().getId()));
 
-
         if (entity.getValorBoleto() == null)
             entity.setValorBoleto(entity.getEnquadramento().getValor());
 
