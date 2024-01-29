@@ -3,6 +3,7 @@ package br.com.gris.multas.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.gris.multas.domain.model.Veiculo;
@@ -35,9 +37,14 @@ public class VeiculoController {
         return new ResponseEntity<Veiculo>(service.findById(id), HttpStatus.OK);
     }
     
-    @GetMapping("/placa/{placa}")
-    public ResponseEntity<Veiculo> findByPlaca(@NonNull @PathVariable String placa) {
-        return new ResponseEntity<Veiculo>(service.findByPlaca(placa), HttpStatus.OK);
+    @GetMapping("/filtro")
+    public Page<Veiculo> findByFiltro(
+        @NonNull @RequestParam ("placa") String placa,
+        @NonNull @RequestParam ("showDeactive") Boolean showDeactive,
+        @NonNull @RequestParam ("page") Integer page,
+        @NonNull @RequestParam ("inPage") Integer inPage
+        ) {
+        return service.findByFiltro(placa, showDeactive, page, inPage);
     }
     
     @PostMapping()

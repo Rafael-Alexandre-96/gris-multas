@@ -3,6 +3,9 @@ package br.com.gris.multas.domain.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +26,13 @@ public class VeiculoService {
         return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
     }
 
-    public Veiculo findByPlaca(@NonNull String placa) {
-        return repository.findByPlaca(placa.toUpperCase()).orElseThrow(() -> this.throwEntityNotFoundException(placa));
+    public Page<Veiculo> findByFiltro(@NonNull String placa, @NonNull Boolean showDeactive, @NonNull Integer page, @NonNull Integer inPage) {
+        PageRequest pageable = PageRequest.of(page, inPage);
+        var entities = repository.findByPlacaContains(placa.toUpperCase(), pageable);
+        /*if (!showDeactive) {
+            entities.removeIf(veiculo -> veiculo.getRegistroStatus().isDeactive());
+        }*/
+        return entities;
     }
 
     @Transactional
