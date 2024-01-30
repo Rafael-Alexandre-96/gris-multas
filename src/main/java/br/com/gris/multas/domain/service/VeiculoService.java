@@ -3,7 +3,6 @@ package br.com.gris.multas.domain.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
@@ -30,7 +29,7 @@ public class VeiculoService {
         PageRequest pageable = PageRequest.of(page, inPage);
         var entities = repository.findByPlacaContains(placa.toUpperCase(), pageable);
         /*if (!showDeactive) {
-            entities.removeIf(veiculo -> veiculo.getRegistroStatus().isDeactive());
+            entities.getContent().removeIf(veiculo -> veiculo.getRegistroStatus().isDeactive());
         }*/
         return entities;
     }
