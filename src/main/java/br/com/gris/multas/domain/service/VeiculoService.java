@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Veiculo;
 import br.com.gris.multas.domain.repository.VeiculoRepository;
@@ -25,12 +27,16 @@ public class VeiculoService {
         return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
     }
 
-    public Page<Veiculo> findByFiltro(@NonNull String placa, @NonNull Boolean showDeactive, @NonNull Integer page, @NonNull Integer inPage) {
-        PageRequest pageable = PageRequest.of(page, inPage);
-        var entities = repository.findByPlacaContains(placa.toUpperCase(), pageable);
-        /*if (!showDeactive) {
-            entities.getContent().removeIf(veiculo -> veiculo.getRegistroStatus().isDeactive());
-        }*/
+    public Page<Veiculo> findByFiltro(
+        @NonNull String placa,
+        @NonNull Boolean showDeactive,
+        @NonNull Integer page,
+        @NonNull Integer inPage,
+        @NonNull String sort,
+        @NonNull Boolean asc
+    ) {
+        PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
+        var entities = showDeactive ? repository.findByPlacaContains(placa.toUpperCase(), pageable) : repository.findByPlacaContainsActive(placa.toUpperCase(), pageable);
         return entities;
     }
 
@@ -38,7 +44,7 @@ public class VeiculoService {
     public Veiculo create(@NonNull Veiculo entity) {
         entity.getRegistroStatus().setCreateAtNow();
         entity.getRegistroStatus().setActive();
-        return repository.save(entity);
+        return repository.save(this.validadeVeiculo(entity));
     }
 
     @Transactional
@@ -47,7 +53,19 @@ public class VeiculoService {
         entity.setId(id);
         entity.setRegistroStatus(finded.getRegistroStatus());
         entity.getRegistroStatus().setUpdateAtNow();
-        return repository.save(entity);
+        return repository.save(this.validadeVeiculo(entity));
+    }
+
+    private Veiculo validadeVeiculo(@NonNull Veiculo entity) {
+        CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
+
+        if (entity.getPlaca() == null || !entity.getPlaca().matches("[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}|[A-Z]{3}[0-9]{4}"))
+			ex.addFieldError("Placa", "Formato inválido: ABC0X00.");
+
+        if (ex.getFieldErros().size() > 0)
+			throw ex;
+
+        return entity;
     }
 
     @Transactional

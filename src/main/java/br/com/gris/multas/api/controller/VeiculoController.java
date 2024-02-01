@@ -39,12 +39,14 @@ public class VeiculoController {
     
     @GetMapping("/filtro")
     public Page<Veiculo> findByFiltro(
-        @NonNull @RequestParam ("placa") String placa,
-        @NonNull @RequestParam ("showDeactive") Boolean showDeactive,
-        @NonNull @RequestParam ("page") Integer page,
-        @NonNull @RequestParam ("inPage") Integer inPage
-        ) {
-        return service.findByFiltro(placa, showDeactive, page, inPage);
+        @NonNull @RequestParam (name = "placa", defaultValue = "") String placa,
+        @NonNull @RequestParam (name = "showDeactive", defaultValue = "true") Boolean showDeactive,
+        @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
+        @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
+        @NonNull @RequestParam (name = "sort", defaultValue = "placa") String sort,
+        @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
+    ) {
+        return service.findByFiltro(placa, showDeactive, page, inPage, sort, asc);
     }
     
     @PostMapping()
