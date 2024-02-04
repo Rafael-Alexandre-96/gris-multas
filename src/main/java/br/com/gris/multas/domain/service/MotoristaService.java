@@ -3,10 +3,14 @@ package br.com.gris.multas.domain.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Motorista;
 import br.com.gris.multas.domain.repository.MotoristaRepository;
@@ -23,11 +27,24 @@ public class MotoristaService {
         return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
     }
 
+    public Page<Motorista> findByFiltro(
+        @NonNull String nome,
+        @NonNull Boolean showDeactive,
+        @NonNull Integer page,
+        @NonNull Integer inPage,
+        @NonNull String sort,
+        @NonNull Boolean asc
+    ) {
+        PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
+        var entities = showDeactive ? repository.findByNomeContains(nome.toUpperCase(), pageable) : repository.findByNomeContainsActive(nome.toUpperCase(), pageable);
+        return entities;
+    }
+
     @Transactional
     public Motorista create(@NonNull Motorista entity) {
         entity.getRegistroStatus().setCreateAtNow();
         entity.getRegistroStatus().setActive();
-        return repository.save(entity);
+        return repository.save(this.validadeMotorista(entity));
     }
 
     @Transactional
@@ -36,7 +53,22 @@ public class MotoristaService {
         entity.setId(id);
         entity.setRegistroStatus(finded.getRegistroStatus());
         entity.getRegistroStatus().setUpdateAtNow();
-        return repository.save(entity);
+        return repository.save(this.validadeMotorista(entity));
+    }
+
+    private Motorista validadeMotorista(@NonNull Motorista entity) {
+        CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
+
+        if (entity.getNome() == null || entity.getNome().length() < 10)
+			ex.addFieldError("Nome", "Deve ter mais que 10 caracteres.");
+
+        if (entity.getCpf() == null || !entity.getCpf().matches("[0-9]{11}"))
+			ex.addFieldError("CPF", "Deve conter 11 numeros.");
+
+        if (ex.getFieldErros().size() > 0)
+			throw ex;
+
+        return entity;
     }
 
     @Transactional
