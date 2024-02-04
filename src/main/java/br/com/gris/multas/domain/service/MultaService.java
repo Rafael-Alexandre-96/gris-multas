@@ -3,6 +3,9 @@ package br.com.gris.multas.domain.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,17 @@ public class MultaService {
 
     public Multa findById(@NonNull String id) {
         return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
+    }
+
+    public Page<Multa> findByFiltro(
+        @NonNull Integer page,
+        @NonNull Integer inPage,
+        @NonNull String sort,
+        @NonNull Boolean asc
+    ) {
+        PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
+        var entities = repository.findAll(pageable);
+        return entities;
     }
 
     @Transactional

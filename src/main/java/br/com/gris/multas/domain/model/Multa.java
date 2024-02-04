@@ -24,7 +24,7 @@ public class Multa {
     private String local;
     private Enquadramento enquadramento;
     private String numeroAit;
-    private Infrator infrator;
+    private Infrator infrator = Infrator.MOTORISTA;
     private Veiculo veiculo;
     private Veiculo semiReboque;
     private Motorista motorista;
@@ -34,13 +34,13 @@ public class Multa {
     private LocalDateTime prazoIndicacao;
     private Boolean boletoRecebido = false;
     private LocalDateTime vencimentoBoleto;
-    private Double valorBoleto;
-    private Double descontoBoleto;
+    private Double valorBoleto = 0D;
+    private Double descontoBoleto = 0D;
     private LocalDateTime envioBoleto;
     private Boolean niRecebido = false;
     private LocalDateTime vencimentoNi;
-    private Double valorNi;
-    private Double descontoNi;
+    private Double valorNi = 0D;
+    private Double descontoNi = 0D;
     private LocalDateTime envioNi;
     private Integer multiplicadorNi = 1;
     private String observacao;
