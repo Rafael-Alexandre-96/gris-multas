@@ -24,41 +24,41 @@ import br.com.gris.multas.domain.service.MultaService;
 @RestController
 @RequestMapping("/api/multa")
 public class MultaController {
-    @Autowired private MultaService service;
-    
-    @GetMapping()
-    public List<Multa> findAll() {
-        return service.findAll();
-    }
+  @Autowired private MultaService service;
+  
+  @GetMapping()
+  public List<Multa> findAll() {
+    return service.findAll();
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Multa> findById(@NonNull @PathVariable String id) {
-        return new ResponseEntity<Multa>(service.findById(id), HttpStatus.OK);
-    }
-    
-    @GetMapping("/filtro")
-    public Page<Multa> findByFiltro(
-        @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
-        @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
-        @NonNull @RequestParam (name = "sort", defaultValue = "placa") String sort,
-        @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
-    ) {
-        return service.findByFiltro(page, inPage, sort, asc);
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<Multa> findById(@NonNull @PathVariable String id) {
+    return new ResponseEntity<Multa>(service.findById(id), HttpStatus.OK);
+  }
+  
+  @GetMapping("/filtro")
+  public Page<Multa> findByFiltro(
+    @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
+    @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
+    @NonNull @RequestParam (name = "sort", defaultValue = "placa") String sort,
+    @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
+  ) {
+    return service.findByFiltro(page, inPage, sort, asc);
+  }
 
-    @PostMapping()
-    public ResponseEntity<Multa> create(@NonNull @RequestBody Multa input) {
-        return new ResponseEntity<Multa>(service.create(input), HttpStatus.CREATED);
-    }
+  @PostMapping()
+  public ResponseEntity<Multa> create(@NonNull @RequestBody Multa input) {
+    return new ResponseEntity<Multa>(service.create(input), HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Multa> update(@NonNull @PathVariable String id, @NonNull @RequestBody Multa input) {
-        return new ResponseEntity<Multa>(service.update(id, input), HttpStatus.OK);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<Multa> update(@NonNull @PathVariable String id, @NonNull @RequestBody Multa input) {
+    return new ResponseEntity<Multa>(service.update(id, input), HttpStatus.OK);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@NonNull @PathVariable String id) {
-        service.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@NonNull @PathVariable String id) {
+    service.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
 }

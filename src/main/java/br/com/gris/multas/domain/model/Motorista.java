@@ -16,12 +16,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Document("motorista")
 public class Motorista {
-    @Id private String id;
-    private String nome;
-    private String cpf;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
+  @Id private String id;
+  private String nome;
+  private String cpf;
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
 
-    public void setNome(String nome) {
-        this.nome = nome.toUpperCase();
-    }
+  public void setNome(String nome) {
+    this.nome = nome.toUpperCase();
+  }
 }

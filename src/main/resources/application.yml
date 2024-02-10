@@ -1,19 +1,19 @@
 spring:
-    data:
-        mongodb:
-            uri: ${MONGO_URI}
-            database: gris
-    config:
-        import: optional:file:.env[.properties]
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      database: gris
+  config:
+    import: optional:file:.env[.properties]
 
 cors:
-    originPatterns: http://localhost:8080,http://localhost:3000,https://rafaelalexandre.tech
+  originPatterns: http://localhost:8080,http://localhost:3000,https://rafaelalexandre.tech
 
 logging:
-    level:
-        org:
-            springframework:
-                data:
-                    mongodb:
-                        core:
-                            MongoTemplate: DEBUG
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG

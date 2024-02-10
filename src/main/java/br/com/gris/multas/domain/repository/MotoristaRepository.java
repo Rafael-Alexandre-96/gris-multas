@@ -9,9 +9,9 @@ import br.com.gris.multas.domain.model.Motorista;
 
 public interface MotoristaRepository extends MongoRepository<Motorista, String> {
 
-    Page<Motorista> findByNomeContains(String nome, Pageable pageable);
+  Page<Motorista> findByNomeContains(String nome, Pageable pageable);
 
-    @Query("{ 'nome': /.*?0.*/, 'registroStatus.active': true }")
-    Page<Motorista> findByNomeContainsActive(String nome, Pageable pageable);
-    
+  @Query("{ 'nome': /.*?0.*/, 'registroStatus.active': true }")
+  Page<Motorista> findByNomeContainsActive(String nome, Pageable pageable);
+  
 }

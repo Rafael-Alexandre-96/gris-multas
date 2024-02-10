@@ -17,16 +17,16 @@ import lombok.Setter;
 @Document("veiculo")
 public class Veiculo {
 
-    @Id private String id;
-    private String placa;
-    private String frota;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
+  @Id private String id;
+  private String placa;
+  private String frota;
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
 
-    public void setPlaca(String placa) {
-        this.placa = placa.toUpperCase();
-    }
+  public void setPlaca(String placa) {
+    this.placa = placa.toUpperCase();
+  }
 
-    public void setFrota(String frota) {
-        this.frota = frota.toUpperCase();
-    }
+  public void setFrota(String frota) {
+    this.frota = frota.toUpperCase();
+  }
 }

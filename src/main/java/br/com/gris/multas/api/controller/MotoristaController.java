@@ -25,53 +25,53 @@ import br.com.gris.multas.domain.service.MotoristaService;
 @RestController
 @RequestMapping("/api/motorista")
 public class MotoristaController {
-    @Autowired private MotoristaService service;
-    
-    @GetMapping()
-    public List<Motorista> findAll() {
-        return service.findAll();
-    }
+  @Autowired private MotoristaService service;
+  
+  @GetMapping()
+  public List<Motorista> findAll() {
+    return service.findAll();
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Motorista> findById(@NonNull @PathVariable String id) {
-        return new ResponseEntity<Motorista>(service.findById(id), HttpStatus.OK);
-    }
-    
-    @GetMapping("/filtro")
-    public Page<Motorista> findByFiltro(
-        @NonNull @RequestParam (name = "nome", defaultValue = "") String nome,
-        @NonNull @RequestParam (name = "showDeactive", defaultValue = "true") Boolean showDeactive,
-        @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
-        @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
-        @NonNull @RequestParam (name = "sort", defaultValue = "nome") String sort,
-        @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
-    ) {
-        return service.findByFiltro(nome, showDeactive, page, inPage, sort, asc);
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<Motorista> findById(@NonNull @PathVariable String id) {
+    return new ResponseEntity<Motorista>(service.findById(id), HttpStatus.OK);
+  }
+  
+  @GetMapping("/filtro")
+  public Page<Motorista> findByFiltro(
+    @NonNull @RequestParam (name = "nome", defaultValue = "") String nome,
+    @NonNull @RequestParam (name = "showDeactive", defaultValue = "true") Boolean showDeactive,
+    @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
+    @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
+    @NonNull @RequestParam (name = "sort", defaultValue = "nome") String sort,
+    @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
+  ) {
+    return service.findByFiltro(nome, showDeactive, page, inPage, sort, asc);
+  }
 
-    @PostMapping()
-    public ResponseEntity<Motorista> create(@NonNull @RequestBody Motorista input) {
-        return new ResponseEntity<Motorista>(service.create(input), HttpStatus.CREATED);
-    }
+  @PostMapping()
+  public ResponseEntity<Motorista> create(@NonNull @RequestBody Motorista input) {
+    return new ResponseEntity<Motorista>(service.create(input), HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Motorista> update(@NonNull @PathVariable String id, @RequestBody Motorista input) {
-        return new ResponseEntity<Motorista>(service.update(id, input), HttpStatus.OK);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<Motorista> update(@NonNull @PathVariable String id, @RequestBody Motorista input) {
+    return new ResponseEntity<Motorista>(service.update(id, input), HttpStatus.OK);
+  }
 
-    @PatchMapping("/{id}/active")
-    public ResponseEntity<Motorista> active(@NonNull @PathVariable String id) {
-        return new ResponseEntity<Motorista>(service.setActive(id, true), HttpStatus.OK);
-    }
+  @PatchMapping("/{id}/active")
+  public ResponseEntity<Motorista> active(@NonNull @PathVariable String id) {
+    return new ResponseEntity<Motorista>(service.setActive(id, true), HttpStatus.OK);
+  }
 
-    @PatchMapping("/{id}/deactive")
-    public ResponseEntity<Motorista> deactive(@NonNull @PathVariable String id) {
-        return new ResponseEntity<Motorista>(service.setActive(id, false), HttpStatus.OK);
-    }
+  @PatchMapping("/{id}/deactive")
+  public ResponseEntity<Motorista> deactive(@NonNull @PathVariable String id) {
+    return new ResponseEntity<Motorista>(service.setActive(id, false), HttpStatus.OK);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@NonNull @PathVariable String id) {
-        service.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@NonNull @PathVariable String id) {
+    service.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
 }

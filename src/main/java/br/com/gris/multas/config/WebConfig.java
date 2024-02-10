@@ -9,10 +9,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${cors.originPatterns:default}")
+  @Value("${cors.originPatterns:default}")
 	private String corsOriginPatterns = "";
 
-    @Override
+  @Override
 	public void addCorsMappings(@NonNull CorsRegistry registry) {
 		var allowedOrigins = corsOriginPatterns.split(",");
 		registry.addMapping("/**")
@@ -21,5 +21,5 @@ public class WebConfig implements WebMvcConfigurer {
 			.allowedOrigins(allowedOrigins)
 			.allowCredentials(true);
 	}
-    
+  
 }
