@@ -48,11 +48,13 @@ public class Multa {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
 
   public void setLocal(String local) {
-    this.local = local.toUpperCase();
+    if (local != null)
+      this.local = local.toUpperCase();
   }
 
   public void setNumeroAit(String numeroAit) {
-    this.numeroAit = numeroAit.toUpperCase();
+    if (numeroAit != null)
+      this.numeroAit = numeroAit.toUpperCase();
   }
 
   /***

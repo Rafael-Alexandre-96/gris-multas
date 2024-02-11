@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Enquadramento;
 import br.com.gris.multas.domain.repository.EnquadramentoRepository;
@@ -40,7 +41,7 @@ public class EnquadramentoService {
 
   @Transactional
   public Enquadramento create(@NonNull Enquadramento entity) {
-    return repository.save(entity);
+    return repository.save(this.validateEnquadramento(entity));
   }
 
   @Transactional
@@ -52,7 +53,22 @@ public class EnquadramentoService {
   public Enquadramento update(@NonNull String id, Enquadramento entity) {
     Enquadramento finded = repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
     entity.setId(finded.getId());
-    return repository.save(entity);
+    return repository.save(this.validateEnquadramento(entity));
+  }
+
+  private Enquadramento validateEnquadramento(@NonNull Enquadramento entity) {
+    CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
+
+    if (entity.getNumeroEnquadramento() == null || entity.getNumeroEnquadramento().length() != 6)
+			ex.addFieldError("NumeroEnquadramento", "Deve ter que 6 caracteres.");
+
+    if (entity.getDescricao() == null || entity.getDescricao().length() < 10)
+			ex.addFieldError("Descricao", "Deve ter mais que 10 caracteres.");
+
+    if (ex.getFieldErros().size() > 0)
+			throw ex;
+
+    return entity;
   }
 
   @Transactional

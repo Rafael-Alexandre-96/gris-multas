@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Multa;
 import br.com.gris.multas.domain.repository.MultaRepository;
@@ -44,7 +45,7 @@ public class MultaService {
   public Multa create(@NonNull Multa entity) {
     entity.getRegistroStatus().setCreateAtNow();
     entity.getRegistroStatus().setActive();
-    return repository.save(this.validate(entity));
+    return repository.save(this.validateMulta(entity));
   }
 
   @Transactional
@@ -53,12 +54,18 @@ public class MultaService {
     entity.setId(finded.getId());
     entity.setRegistroStatus(finded.getRegistroStatus());
     entity.getRegistroStatus().setUpdateAtNow();
-    return repository.save(this.validate(entity));
+    return repository.save(this.validateMulta(entity));
   }
 
-  private Multa validate(@NonNull Multa entity) {
-    entity.setEnquadramento(enquadramentoService.findById(entity.getEnquadramento().getId()));
+  private Multa validateMulta(@NonNull Multa entity) {
+    CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
 
+    if (entity.getEnquadramento() == null || entity.getEnquadramento().getId() == null) {
+      ex.addFieldError("Enquadramento", "Enquadramento não pode ser nulo.");
+    } else {
+      entity.setEnquadramento(enquadramentoService.findById(entity.getEnquadramento().getId()));
+    }
+    
     if (entity.getMotorista() != null)
       entity.setMotorista(motoristaService.findById(entity.getMotorista().getId()));
 
@@ -70,6 +77,9 @@ public class MultaService {
 
     if (entity.getValorBoleto() == null)
       entity.setValorBoleto(entity.getEnquadramento().getValor());
+
+    if (ex.getFieldErros().size() > 0)
+			throw ex;
 
     return entity;
   }

@@ -19,9 +19,9 @@ public class Enquadramento {
   private String numeroEnquadramento;
   private String descricao;
   private String baseLegal;
-  private Infrator infrator;
-  private Integer pontos;
-  private Double valor;
+  private Infrator infrator = Infrator.MOTORISTA;
+  private Integer pontos = 0;
+  private Double valor = 0D;
 
   public void setDescricao(String descricao) {
     this.descricao = descricao.toUpperCase();
