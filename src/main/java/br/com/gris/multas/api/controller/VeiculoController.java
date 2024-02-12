@@ -32,6 +32,16 @@ public class VeiculoController {
     return service.findAll();
   }
 
+  @GetMapping("/tracao")
+  public List<Veiculo> findAllTracao() {
+    return service.findAllTracao();
+  }
+
+  @GetMapping("/reboque")
+  public List<Veiculo> findAllReboque() {
+    return service.findAllReboque();
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<Veiculo> findById(@NonNull @PathVariable String id) {
     return new ResponseEntity<Veiculo>(service.findById(id), HttpStatus.OK);

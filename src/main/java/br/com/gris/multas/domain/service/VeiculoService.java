@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Veiculo;
+import br.com.gris.multas.domain.model.enums.TipoRodado;
 import br.com.gris.multas.domain.repository.VeiculoRepository;
 
 @Service
@@ -38,6 +39,14 @@ public class VeiculoService {
     PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
     var entities = showDeactive ? repository.findByPlacaContains(placa.toUpperCase(), pageable) : repository.findByPlacaContainsActive(placa.toUpperCase(), pageable);
     return entities;
+  }
+
+  public List<Veiculo> findAllTracao() {
+    return repository.findByTipoRodado(TipoRodado.TRACAO);
+  }
+
+  public List<Veiculo> findAllReboque() {
+    return repository.findByTipoRodado(TipoRodado.REBOQUE);
   }
 
   @Transactional

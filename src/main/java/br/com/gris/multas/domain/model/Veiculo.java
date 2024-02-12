@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.gris.multas.domain.model.enums.TipoRodado;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class Veiculo {
   @Id private String id;
   private String placa;
   private String frota;
+  private TipoRodado tipoRodado = TipoRodado.TRACAO;
   @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
 
   public void setPlaca(String placa) {
