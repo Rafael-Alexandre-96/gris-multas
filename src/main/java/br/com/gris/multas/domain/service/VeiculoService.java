@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Veiculo;
-import br.com.gris.multas.domain.model.enums.TipoRodado;
 import br.com.gris.multas.domain.repository.VeiculoRepository;
 
 @Service
@@ -28,8 +27,18 @@ public class VeiculoService {
     return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
   }
 
-  public Page<Veiculo> findByFiltro(
-    @NonNull String placa,
+  public List<Veiculo> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value,
+    @NonNull Boolean showDeactive
+  ) {
+    var entities = showDeactive ? repository.findByFieldContains(field, value.toUpperCase()) : repository.findByFieldContainsActive(field, value.toUpperCase());
+    return entities;
+  }
+
+  public Page<Veiculo> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value,
     @NonNull Boolean showDeactive,
     @NonNull Integer page,
     @NonNull Integer inPage,
@@ -37,16 +46,8 @@ public class VeiculoService {
     @NonNull Boolean asc
   ) {
     PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
-    var entities = showDeactive ? repository.findByPlacaContains(placa.toUpperCase(), pageable) : repository.findByPlacaContainsActive(placa.toUpperCase(), pageable);
+    var entities = showDeactive ? repository.findByFieldContains(field, value.toUpperCase(), pageable) : repository.findByFieldContainsActive(field, value.toUpperCase(), pageable);
     return entities;
-  }
-
-  public List<Veiculo> findAllTracao() {
-    return repository.findByTipoRodado(TipoRodado.TRACAO);
-  }
-
-  public List<Veiculo> findAllReboque() {
-    return repository.findByTipoRodado(TipoRodado.REBOQUE);
   }
 
   @Transactional
@@ -65,7 +66,7 @@ public class VeiculoService {
     return repository.save(this.validadeVeiculo(entity));
   }
 
-  private Veiculo validadeVeiculo(@NonNull Veiculo entity) {
+  @NonNull private Veiculo validadeVeiculo(@NonNull Veiculo entity) {
     CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
 
     if (entity.getPlaca() == null || !entity.getPlaca().matches("[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}|[A-Z]{3}[0-9]{4}"))

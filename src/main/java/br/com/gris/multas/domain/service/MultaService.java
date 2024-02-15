@@ -30,14 +30,24 @@ public class MultaService {
     return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
   }
 
-  public Page<Multa> findByFiltro(
+  public List<Multa> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value
+  ) {
+    var entities = repository.findByFieldContains(field, value.toUpperCase());
+    return entities;
+  }
+
+  public Page<Multa> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value,
     @NonNull Integer page,
     @NonNull Integer inPage,
     @NonNull String sort,
     @NonNull Boolean asc
   ) {
     PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
-    var entities = repository.findAll(pageable);
+    var entities = repository.findByFieldContains(field, value.toUpperCase(), pageable);
     return entities;
   }
 
@@ -57,7 +67,8 @@ public class MultaService {
     return repository.save(this.validateMulta(entity));
   }
 
-  private Multa validateMulta(@NonNull Multa entity) {
+  @SuppressWarnings("null")
+  @NonNull private Multa validateMulta(@NonNull Multa entity) {
     CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
 
     if (entity.getEnquadramento() == null || entity.getEnquadramento().getId() == null) {
@@ -66,17 +77,14 @@ public class MultaService {
       entity.setEnquadramento(enquadramentoService.findById(entity.getEnquadramento().getId()));
     }
     
-    if (entity.getMotorista() != null)
+    if (entity.getMotorista() != null && entity.getMotorista().getId() != null)
       entity.setMotorista(motoristaService.findById(entity.getMotorista().getId()));
 
-    if (entity.getVeiculo() != null)
+    if (entity.getVeiculo() != null && entity.getVeiculo().getId() != null)
       entity.setVeiculo(veiculoService.findById(entity.getVeiculo().getId()));
 
-    if (entity.getSemiReboque() != null)
+    if (entity.getSemiReboque() != null && entity.getSemiReboque().getId() != null)
       entity.setSemiReboque(veiculoService.findById(entity.getSemiReboque().getId()));
-
-    if (entity.getValorBoleto() == null)
-      entity.setValorBoleto(entity.getEnquadramento().getValor());
 
     if (ex.getFieldErros().size() > 0)
 			throw ex;

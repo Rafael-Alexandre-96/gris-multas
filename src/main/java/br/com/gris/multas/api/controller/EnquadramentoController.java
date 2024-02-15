@@ -37,15 +37,24 @@ public class EnquadramentoController {
     return new ResponseEntity<Enquadramento>(service.findById(id), HttpStatus.OK);
   }
 
-  @GetMapping("/filtro")
-  public Page<Enquadramento> findByFiltro(
-    @NonNull @RequestParam (name = "descricao", defaultValue = "") String nome,
+  @GetMapping("/filtro/all")
+  public List<Enquadramento> findByFieldContains(
+    @NonNull @RequestParam (name = "field", defaultValue = "descricao") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value
+  ) {
+    return service.findByFieldContains(field, value);
+  }
+
+  @GetMapping("/filtro/pageable")
+  public Page<Enquadramento> findByFieldContains(
+    @NonNull @RequestParam (name = "field", defaultValue = "descricao") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value,
     @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
     @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
     @NonNull @RequestParam (name = "sort", defaultValue = "descricao") String sort,
     @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
   ) {
-    return service.findByFiltro(nome, page, inPage, sort, asc);
+    return service.findByFieldContains(field, value, page, inPage, sort, asc);
   }
   
   @PostMapping()

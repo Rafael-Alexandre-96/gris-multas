@@ -30,7 +30,6 @@ public class Multa {
   private Veiculo semiReboque;
   private Motorista motorista;
   private Boolean assinado = false;
-  private Date envioPenalidade;
   private Boolean indicado = false;
   private Date prazoIndicacao;
   private Boolean boletoRecebido = false;
@@ -57,25 +56,44 @@ public class Multa {
       this.numeroAit = numeroAit.toUpperCase();
   }
 
-  /***
-  public void setValorBoleto(Double valorBoleto) {
-    this.valorBoleto = valorBoleto;
-    this.descontoBoleto = valorBoleto * 0.2;
-    this.valorNi = this.valorBoleto * this.multiplicadorNi;
-    this.descontoNi = this.valorNi * 0.2;
-  }
-
-  public void setValorNi(Double valorNi) {
-    this.valorNi = valorNi;
-    this.descontoNi = this.valorNi * 0.2;
-  }
-  ***/
-
   public Double getValorValeBoleto() {
     return this.valorBoleto - this.descontoBoleto;
   }
 
   public Double getValorValeNi() {
     return this.valorNi - this.descontoNi;
+  }
+
+  public String getSituacao() {
+    if (this.infrator == Infrator.MOTORISTA) {
+      if (this.assinado) {
+
+        int ass = (this.assinado) ? 3 : 0;
+        int ind = (this.indicado) ? 5 : 0;
+        int bolRec = (this.boletoRecebido) ? 7 : 0;
+        int envBol = (this.envioBoleto != null) ? 9 : 0;
+        int niRec = (this.niRecebido) ? 11 : 0;
+        int envNi = (this.envioNi != null) ? 13 : 0;
+        int soma = ass + ind + bolRec + envBol + niRec + envNi;
+
+        switch (soma) {
+          case 8: return "AGUARDANDO BOLETO";
+          case 15: return "ENVIAR PARA FINANCEIRO";
+          case 24: return "FINALIZADO";
+          case 3: return "AGUARDANDO BOLETO/NI";
+          case 10: case 34: return "ENVIAR PARA FINANCEIRO (BOLETO)";
+          case 19: return "AGUARDANDO NI";
+          case 21: return "ENVIAR PARA FINANCEIRO (BOLETO/NI)";
+          case 30: return "ENVIAR PARA FINANCEIRO (NI)";
+          case 43: return "FINALIZADO";
+          default: return "ERROR:" + soma;
+        }
+
+      } else {
+        return "AGUARDANDO ASSINATURA";
+      }
+    } else {
+      return "OUTROS";
+    }
   }
 }

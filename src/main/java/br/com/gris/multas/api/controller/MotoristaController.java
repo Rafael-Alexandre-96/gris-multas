@@ -36,17 +36,27 @@ public class MotoristaController {
   public ResponseEntity<Motorista> findById(@NonNull @PathVariable String id) {
     return new ResponseEntity<Motorista>(service.findById(id), HttpStatus.OK);
   }
+
+  @GetMapping("/filtro/all")
+  public List<Motorista> findByFieldContains(
+    @NonNull @RequestParam (name = "field", defaultValue = "nome") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value,
+    @NonNull @RequestParam (name = "showDeactive", defaultValue = "true") Boolean showDeactive
+  ) {
+    return service.findByFieldContains(field, value, showDeactive);
+  }
   
-  @GetMapping("/filtro")
-  public Page<Motorista> findByFiltro(
-    @NonNull @RequestParam (name = "nome", defaultValue = "") String nome,
+  @GetMapping("/filtro/pageable")
+  public Page<Motorista> findByFieldContains(
+    @NonNull @RequestParam (name = "field", defaultValue = "nome") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value,
     @NonNull @RequestParam (name = "showDeactive", defaultValue = "true") Boolean showDeactive,
     @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
     @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
     @NonNull @RequestParam (name = "sort", defaultValue = "nome") String sort,
     @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
   ) {
-    return service.findByFiltro(nome, showDeactive, page, inPage, sort, asc);
+    return service.findByFieldContains(field, value, showDeactive, page, inPage, sort, asc);
   }
 
   @PostMapping()

@@ -25,10 +25,12 @@ public class Veiculo {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY) private RegistroStatus registroStatus = new RegistroStatus();
 
   public void setPlaca(String placa) {
-    this.placa = placa.toUpperCase();
+    if (placa != null)
+      this.placa = placa.toUpperCase();
   }
 
   public void setFrota(String frota) {
-    this.frota = frota.toUpperCase();
+    if (frota != null)
+      this.frota = frota.toUpperCase();
   }
 }

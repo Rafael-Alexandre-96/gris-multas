@@ -8,15 +8,17 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import br.com.gris.multas.domain.model.Veiculo;
-import br.com.gris.multas.domain.model.enums.TipoRodado;
 
 public interface VeiculoRepository extends MongoRepository<Veiculo, String> {
+  @Query("{ ?0: /.*?1.*/ }")
+  List<Veiculo> findByFieldContains(String field, String value);
 
-  Page<Veiculo> findByPlacaContains(String placa, Pageable pageable);
+  @Query("{ ?0: /.*?1.*/, 'registroStatus.active': true }")
+  List<Veiculo> findByFieldContainsActive(String field, String value);
 
-  @Query("{ 'placa': /.*?0.*/, 'registroStatus.active': true }")
-  Page<Veiculo> findByPlacaContainsActive(String placa, Pageable pageable);
+  @Query("{ ?0: /.*?1.*/ }")
+  Page<Veiculo> findByFieldContains(String field, String value, Pageable pageable);
 
-  List<Veiculo> findByTipoRodado(TipoRodado tipoRodado);
-  
+  @Query("{ ?0: /.*?1.*/, 'registroStatus.active': true }")
+  Page<Veiculo> findByFieldContainsActive(String field, String value, Pageable pageable);
 }

@@ -12,7 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
   @Value("${cors.originPatterns:default}")
 	private String corsOriginPatterns = "";
 
-  @Override
+  @SuppressWarnings("null")
+	@Override
 	public void addCorsMappings(@NonNull CorsRegistry registry) {
 		var allowedOrigins = corsOriginPatterns.split(",");
 		registry.addMapping("/**")

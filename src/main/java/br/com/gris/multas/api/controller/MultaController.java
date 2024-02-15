@@ -35,15 +35,25 @@ public class MultaController {
   public ResponseEntity<Multa> findById(@NonNull @PathVariable String id) {
     return new ResponseEntity<Multa>(service.findById(id), HttpStatus.OK);
   }
+
+  @GetMapping("/filtro/all")
+  public List<Multa> findByFieldContains(
+    @NonNull @RequestParam (name = "field", defaultValue = "local") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value
+  ) {
+    return service.findByFieldContains(field, value);
+  }
   
-  @GetMapping("/filtro")
-  public Page<Multa> findByFiltro(
+  @GetMapping("/filtro/pageable")
+  public Page<Multa> findByFieldContains(
+    @NonNull @RequestParam (name = "field", defaultValue = "local") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value,
     @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
     @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
-    @NonNull @RequestParam (name = "sort", defaultValue = "placa") String sort,
+    @NonNull @RequestParam (name = "sort", defaultValue = "local") String sort,
     @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
   ) {
-    return service.findByFiltro(page, inPage, sort, asc);
+    return service.findByFieldContains(field, value, page, inPage, sort, asc);
   }
 
   @PostMapping()

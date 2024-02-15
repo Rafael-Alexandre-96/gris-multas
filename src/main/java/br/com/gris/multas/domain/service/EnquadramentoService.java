@@ -27,15 +27,24 @@ public class EnquadramentoService {
     return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
   }
 
-  public Page<Enquadramento> findByFiltro(
-    @NonNull String descricao,
+  public List<Enquadramento> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value
+  ) {
+    var entities = repository.findByFieldContains(field, value.toUpperCase());
+    return entities;
+  }
+
+  public Page<Enquadramento> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value,
     @NonNull Integer page,
     @NonNull Integer inPage,
     @NonNull String sort,
     @NonNull Boolean asc
   ) {
     PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
-    var entities = repository.findByDescricaoContains(descricao.toUpperCase(), pageable);
+    var entities = repository.findByFieldContains(field, value.toUpperCase(), pageable);
     return entities;
   }
 
@@ -56,7 +65,7 @@ public class EnquadramentoService {
     return repository.save(this.validateEnquadramento(entity));
   }
 
-  private Enquadramento validateEnquadramento(@NonNull Enquadramento entity) {
+  @NonNull private Enquadramento validateEnquadramento(@NonNull Enquadramento entity) {
     CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
 
     if (entity.getNumeroEnquadramento() == null || entity.getNumeroEnquadramento().length() != 6)

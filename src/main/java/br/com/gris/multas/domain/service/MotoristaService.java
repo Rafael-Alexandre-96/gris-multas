@@ -27,8 +27,18 @@ public class MotoristaService {
     return repository.findById(id).orElseThrow(() -> this.throwEntityNotFoundException(id));
   }
 
-  public Page<Motorista> findByFiltro(
-    @NonNull String nome,
+  public List<Motorista> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value,
+    @NonNull Boolean showDeactive
+  ) {
+    var entities = showDeactive ? repository.findByFieldContains(field, value.toUpperCase()) : repository.findByFieldContainsActive(field, value.toUpperCase());
+    return entities;
+  }
+
+  public Page<Motorista> findByFieldContains(
+    @NonNull String field,
+    @NonNull String value,
     @NonNull Boolean showDeactive,
     @NonNull Integer page,
     @NonNull Integer inPage,
@@ -36,7 +46,7 @@ public class MotoristaService {
     @NonNull Boolean asc
   ) {
     PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
-    var entities = showDeactive ? repository.findByNomeContains(nome.toUpperCase(), pageable) : repository.findByNomeContainsActive(nome.toUpperCase(), pageable);
+    var entities = showDeactive ? repository.findByFieldContains(field, value.toUpperCase(), pageable) : repository.findByFieldContainsActive(field, value.toUpperCase(), pageable);
     return entities;
   }
 
@@ -56,7 +66,7 @@ public class MotoristaService {
     return repository.save(this.validadeMotorista(entity));
   }
 
-  private Motorista validadeMotorista(@NonNull Motorista entity) {
+  @NonNull private Motorista validadeMotorista(@NonNull Motorista entity) {
     CustomConstraintViolationException ex = new CustomConstraintViolationException("Um ou mais campos estão inválidos.");
 
     if (entity.getNome() == null || entity.getNome().length() < 10)
