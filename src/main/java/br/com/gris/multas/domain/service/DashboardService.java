@@ -29,7 +29,7 @@ public class DashboardService {
     dashboard.setAguardandoAssinatura(agAssinatura.size());
 
     List<Multa> agBoleto = new ArrayList<>(multas);
-    agBoleto.removeIf(multa -> (multa.getSituacao() != Situacao.AGUARDANDO_BOLETO || multa.getSituacao() != Situacao.AGUARDANDO_BOLETO_NI || multa.getSituacao() != Situacao.AGUARDANDO_NI));
+    agBoleto.removeIf(multa -> (multa.getSituacao() == Situacao.AGUARDANDO_ASSINATURA || multa.getSituacao() == Situacao.ENVIAR_PARA_FINANCEIRO || multa.getSituacao() == Situacao.FINALIZADO || multa.getSituacao() == Situacao.OUTROS ));
     dashboard.setAguardandoBoletos(agBoleto.size());
 
     List<Multa> agEnvio = new ArrayList<>(multas);
