@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import br.com.gris.multas.domain.model.Multa;
+import br.com.gris.multas.domain.model.enums.Infrator;
 
 public interface MultaRepository extends MongoRepository<Multa, String> {
   @Query("{ ?0: /.*?1.*/ }")
@@ -15,4 +16,6 @@ public interface MultaRepository extends MongoRepository<Multa, String> {
 
   @Query("{ ?0: /.*?1.*/ }")
   Page<Multa> findByFieldContains(String field, String value, Pageable pageable);
+
+  List<Multa> findByInfrator(Infrator infrator);
 }

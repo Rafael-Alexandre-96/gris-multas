@@ -55,7 +55,7 @@ public class MultaController {
   ) {
     return service.findByFieldContains(field, value, page, inPage, sort, asc);
   }
-
+  
   @PostMapping()
   public ResponseEntity<Multa> create(@NonNull @RequestBody Multa input) {
     return new ResponseEntity<Multa>(service.create(input), HttpStatus.CREATED);

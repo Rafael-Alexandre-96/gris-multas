@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.com.gris.multas.domain.model.enums.Infrator;
+import br.com.gris.multas.domain.model.enums.Situacao;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,36 +65,43 @@ public class Multa {
     return this.valorNi - this.descontoNi;
   }
 
-  public String getSituacao() {
+  public Situacao getSituacao() {
     if (this.infrator == Infrator.MOTORISTA) {
       if (this.assinado) {
-
-        int ass = (this.assinado) ? 3 : 0;
-        int ind = (this.indicado) ? 5 : 0;
-        int bolRec = (this.boletoRecebido) ? 7 : 0;
-        int envBol = (this.envioBoleto != null) ? 9 : 0;
-        int niRec = (this.niRecebido) ? 11 : 0;
-        int envNi = (this.envioNi != null) ? 13 : 0;
-        int soma = ass + ind + bolRec + envBol + niRec + envNi;
-
-        switch (soma) {
-          case 8: return "AGUARDANDO BOLETO";
-          case 15: return "ENVIAR PARA FINANCEIRO";
-          case 24: return "FINALIZADO";
-          case 3: return "AGUARDANDO BOLETO/NI";
-          case 10: case 34: return "ENVIAR PARA FINANCEIRO (BOLETO)";
-          case 19: return "AGUARDANDO NI";
-          case 21: return "ENVIAR PARA FINANCEIRO (BOLETO/NI)";
-          case 30: return "ENVIAR PARA FINANCEIRO (NI)";
-          case 43: return "FINALIZADO";
-          default: return "ERROR:" + soma;
+        if (this.indicado) { //Indicado
+          if (this.boletoRecebido) { //Boleto Recebido
+            if (this.envioBoleto != null) { //Boleto Enviado
+              return Situacao.FINALIZADO;
+            } else { //Boleto Não Enviado
+              return Situacao.ENVIAR_PARA_FINANCEIRO;
+            }
+          } else { // Boleto Não Recebido
+            return Situacao.AGUARDANDO_BOLETO;
+          }
+        } else { //Não Indicado
+          if (this.boletoRecebido) { //Boleto Recebido
+            if (this.envioBoleto != null) { //Boleto Enviado
+              if (this.niRecebido) { //NI Recebido
+                if (this.envioNi != null) { //Ni Enviado
+                  return Situacao.FINALIZADO;
+                } else { //NI não enviado
+                  return Situacao.ENVIAR_PARA_FINANCEIRO;
+                }
+              } else { //NI não recebida
+                return Situacao.AGUARDANDO_NI;
+              }
+            } else { //Boleto Não Enviado
+              return Situacao.ENVIAR_PARA_FINANCEIRO;
+            }
+          } else { // Boleto Não Recebido
+            return Situacao.AGUARDANDO_BOLETO_NI;
+          }
         }
-
       } else {
-        return "AGUARDANDO ASSINATURA";
+        return Situacao.AGUARDANDO_ASSINATURA;
       }
-    } else {
-      return "OUTROS";
     }
+
+    return Situacao.OUTROS;
   }
 }

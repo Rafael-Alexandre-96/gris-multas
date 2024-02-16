@@ -21,4 +21,10 @@ public interface VeiculoRepository extends MongoRepository<Veiculo, String> {
 
   @Query("{ ?0: /.*?1.*/, 'registroStatus.active': true }")
   Page<Veiculo> findByFieldContainsActive(String field, String value, Pageable pageable);
+
+  @Query("{ 'tipoRodado': 'TRACAO', 'registroStatus.active': true }")
+  List<Veiculo> findAllTracaoActive();
+
+  @Query("{ 'tipoRodado': 'REBOQUE', 'registroStatus.active': true }")
+  List<Veiculo> findAllReboqueActive();
 }

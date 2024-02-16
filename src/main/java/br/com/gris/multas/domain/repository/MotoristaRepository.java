@@ -21,4 +21,7 @@ public interface MotoristaRepository extends MongoRepository<Motorista, String> 
 
   @Query("{ ?0: /.*?1.*/, 'registroStatus.active': true }")
   Page<Motorista> findByFieldContainsActive(String field, String value, Pageable pageable);
+
+  @Query("{ 'registroStatus.active': true }")
+  List<Motorista> findAllActive();
 }
