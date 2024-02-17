@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.gris.multas.api.exception.CustomConstraintViolationException;
 import br.com.gris.multas.api.exception.EntityNotFoundException;
 import br.com.gris.multas.domain.model.Multa;
+import br.com.gris.multas.domain.model.ResumoMotorista;
 import br.com.gris.multas.domain.repository.MultaRepository;
 
 @Service
@@ -49,6 +50,23 @@ public class MultaService {
     PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
     var entities = repository.findByFieldContains(field, value.toUpperCase(), pageable);
     return entities;
+  }
+
+  public Page<Multa> findAguardandoAssinatura(
+    @NonNull String field,
+    @NonNull String value,
+    @NonNull Integer page,
+    @NonNull Integer inPage,
+    @NonNull String sort,
+    @NonNull Boolean asc
+  ) {
+    PageRequest pageable = PageRequest.of(page, inPage, asc ? Sort.by(sort) : Sort.by(sort).descending());
+    var entities = repository.findAguardandoAssinatura(field, value.toUpperCase(), pageable);
+    return entities;
+  }
+
+  public List<ResumoMotorista> motoristasAguardandoAssinatura() {
+    return repository.motoristasAguardandoAssinatura();
   }
 
   @Transactional

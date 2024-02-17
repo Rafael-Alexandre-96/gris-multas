@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.gris.multas.domain.model.Multa;
+import br.com.gris.multas.domain.model.ResumoMotorista;
 import br.com.gris.multas.domain.service.MultaService;
 
 
@@ -55,7 +56,24 @@ public class MultaController {
   ) {
     return service.findByFieldContains(field, value, page, inPage, sort, asc);
   }
-  
+
+  @GetMapping("/aguardando-assinatura")
+  public Page<Multa> findAguardandoAssinatura(
+    @NonNull @RequestParam (name = "field", defaultValue = "infrator") String field,
+    @NonNull @RequestParam (name = "value", defaultValue = "") String value,
+    @NonNull @RequestParam (name = "page", defaultValue = "0") Integer page,
+    @NonNull @RequestParam (name = "inPage", defaultValue = "10") Integer inPage,
+    @NonNull @RequestParam (name = "sort", defaultValue = "dataInfracao") String sort,
+    @NonNull @RequestParam (name = "asc", defaultValue = "true") Boolean asc
+  ) {
+    return service.findAguardandoAssinatura(field, value, page, inPage, sort, asc);
+  }
+
+  @GetMapping("/resumo-motorista")
+  public List<ResumoMotorista> motoristasAguardandoAssinatura() {
+      return service.motoristasAguardandoAssinatura();
+  }
+
   @PostMapping()
   public ResponseEntity<Multa> create(@NonNull @RequestBody Multa input) {
     return new ResponseEntity<Multa>(service.create(input), HttpStatus.CREATED);
